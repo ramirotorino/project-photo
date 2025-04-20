@@ -1,0 +1,19 @@
+.modal__message {
+  font-size: 24px;
+  text-align: center;
+  padding: 1rem;
+  color: white;
+}
+
+.tooltip {
+  background: rgba(255, 255, 255, 0.2); /* fondo translúcido */
+  backdrop-filter: blur(10px); /* efecto glass */
+  -webkit-backdrop-filter: blur(10px); /* soporte Safari */
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 10px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  padding: 30px;
+  width: 400px;
+  max-width: 90%;
+  color: #111; /* aseguramos contraste */
+}

@@ -1,0 +1,90 @@
+.testimonials {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 4rem 1.5rem;
+  background-color: #000;
+}
+
+.testimonials__video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* 🟢 se ajusta como fondo */
+  opacity: 0.2;
+  z-index: 0;
+}
+
+/* 📦 Contenido centrado sobre el video */
+.testimonials .page {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  position: relative;
+  z-index: 1; /* Asegura que el contenido esté por encima del video */
+}
+
+/* 💬 Tarjeta de reseña */
+.testimonials__card {
+  width: 100%;
+  max-width: 960px;
+  min-height: 280px;
+  padding: 2rem;
+  border-radius: 16px;
+  backdrop-filter: blur(12px);
+  background-color: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  color: #f2f2f2;
+  text-align: left;
+  transition: all 0.3s ease-in-out;
+}
+
+/* 🎨 Comillas y texto */
+.testimonials__quote {
+  font-size: 3rem;
+  color: #8e44ad;
+  margin-bottom: 1rem;
+}
+
+.testimonials__name {
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: white;
+  margin-bottom: 1rem;
+}
+
+.testimonials__text {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #e0e0e0;
+  flex-grow: 1;
+}
+
+/* 🔘 Puntos de navegación */
+.testimonials__dots {
+  display: flex;
+  justify-content: center;
+  margin-top: 1.5rem;
+  gap: 0.5rem;
+}
+
+.testimonials__dot {
+  width: 10px;
+  height: 10px;
+  background-color: #888;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.testimonials__dot.active {
+  background-color: #8e44ad;
+}
