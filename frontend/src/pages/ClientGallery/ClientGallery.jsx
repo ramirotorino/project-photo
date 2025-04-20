@@ -11,15 +11,11 @@ function ClientGallery() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const userEmail = localStorage.getItem("userEmail");
-
     import("../../utils/cloudinaryApi.js").then(({ getPhotos }) => {
       getPhotos()
         .then((data) => {
-          const filteredPhotos = data.filter(
-            (photo) => photo.owner === userEmail
-          );
-          setPhotos(filteredPhotos);
+          console.log("📸 Fotos recibidas del backend:", data);
+          setPhotos(data); // ✅ ya vienen filtradas por el backend
         })
         .catch((err) => {
           setError("Lo sentimos, hubo un error al cargar las fotos.");
@@ -32,19 +28,25 @@ function ClientGallery() {
   async function handleDownloadAll() {
     const zip = new JSZip();
 
-    const downloadPromises = photos.map((photo, index) =>
-      fetch(photo.image)
-        .then((res) => res.blob())
-        .then((blob) => {
-          const filename = `foto_${index + 1}.jpg`;
-          zip.file(filename, blob);
-        })
-    );
+    const downloadPromises = [];
+
+    photos.forEach((photo, index) => {
+      photo.images?.forEach((url, i) => {
+        const filename = `sesion${index + 1}_foto${i + 1}.jpg`;
+        downloadPromises.push(
+          fetch(url)
+            .then((res) => res.blob())
+            .then((blob) => {
+              zip.file(filename, blob);
+            })
+        );
+      });
+    });
 
     await Promise.all(downloadPromises);
 
     zip.generateAsync({ type: "blob" }).then((content) => {
-      saveAs(content, "mi_sesion_de_fotos.zip");
+      saveAs(content, "mis_fotos.zip");
     });
   }
 
@@ -52,11 +54,20 @@ function ClientGallery() {
     setVisibleCount((prev) => prev + 3);
   };
 
+  console.log("🖼 Fotos que se van a renderizar:", photos);
+
   return (
     <section className="client-gallery">
       <div className="client-gallery__top">
-        <h2>Mis Fotos</h2>
-        <h3>Total de fotos: {photos.length}</h3>
+        <h2>Total de fotos: {photos.length}</h2>
+
+        {photos.map((photo, index) => (
+          <div key={index}>
+            <p>{photo.title}</p>
+            <p>{photo.date}</p>
+            <p> {photo.images?.length}</p>
+          </div>
+        ))}
 
         <button
           className="client-gallery__download"
@@ -73,14 +84,19 @@ function ClientGallery() {
         <>
           <div className="client-gallery__grid">
             {photos.slice(0, visibleCount).map((photo) => (
-              <div key={photo.id} className="client-gallery__card">
-                <img src={photo.url} alt={photo.name} />
+              <div key={photo._id} className="client-gallery__card">
+                <img
+                  src={photo.images?.[0]} // ✅ usamos la primera imagen de la sesión
+                  alt={photo.title || "Foto"}
+                  onError={(e) => (e.target.style.display = "none")}
+                />
                 <p className="client-gallery__title">
                   {photo.title || "Sesión sin título"}
                 </p>
               </div>
             ))}
           </div>
+
           {visibleCount < photos.length && (
             <button onClick={handleShowMore}>Mostrar más</button>
           )}

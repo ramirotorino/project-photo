@@ -1,4 +1,7 @@
 .client-gallery {
+  max-width: 1200px; /* ✅ Mismo ancho que otras secciones */
+  margin: 0 auto; /* ✅ Centrado horizontal */
+  padding: 0 20px;
   padding: 2rem;
   background-color: #000;
   color: #f2f2f2;
@@ -40,6 +43,8 @@
   border-radius: 6px;
   border: 1px solid #222;
   text-align: center;
+  width: 300px;
+  margin: 0 auto;
 }
 
 .client-gallery__card img {

@@ -13,7 +13,7 @@ function AdminPanel() {
   useEffect(() => {
     const token = localStorage.getItem("jwt");
 
-    fetch("http://localhost:3000/articles", {
+    fetch("http://localhost:3000/photos", {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -42,7 +42,7 @@ function AdminPanel() {
       formData.append("images", file);
     });
 
-    fetch("http://localhost:3000/articles", {
+    fetch("http://localhost:3000/photos", {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -63,6 +63,24 @@ function AdminPanel() {
       ...prev,
       images: files,
     }));
+  }
+
+  function handleDelete(photoId) {
+    const token = localStorage.getItem("jwt");
+
+    fetch(`http://localhost:3000/photos/${photoId}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error("Error al eliminar sesión");
+        }
+        setPhotos((prev) => prev.filter((photo) => photo._id !== photoId)); // ✅ actualizar estado
+      })
+      .catch((err) => console.error("❌ Error al eliminar sesión:", err));
   }
 
   return (
@@ -126,7 +144,12 @@ function AdminPanel() {
             <p>
               <strong>Fotos:</strong> {photo.images?.length || 0}
             </p>
-            <button className="admin__delete">Eliminar</button>
+            <button
+              className="admin__delete"
+              onClick={() => handleDelete(photo._id)}
+            >
+              Eliminar
+            </button>
           </li>
         ))}
       </ul>

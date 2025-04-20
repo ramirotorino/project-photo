@@ -13,7 +13,7 @@ const auth = require("./middleware/auth"); // 🔐 Middleware de autorización
 // Rutas
 const authRoutes = require("./routes/auth"); // /signup, /signin
 const userRoutes = require("./routes/users"); // /users/me
-const photoRoutes = require("./routes/photos"); // /articles
+const photoRoutes = require("./routes/photos"); // /photos
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -39,7 +39,7 @@ app.use("/", authRoutes); // 🔓 se hace explícito que es público
 // 🔐 Rutas protegidas
 app.use(auth); // A partir de acá se requiere JWT
 app.use("/users", userRoutes);
-app.use("/articles", photoRoutes);
+app.use("/photos", photoRoutes);
 
 // ⚠️ Ruta no encontrada
 app.use("*", (req, res) => {

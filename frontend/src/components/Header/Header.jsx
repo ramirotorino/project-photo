@@ -9,7 +9,7 @@ function Header({ onLoginClick, onRegisterClick, currentUser, onLogout }) {
         </a>
         <nav className="header__nav">
           <a href="/galeria" className="header__link">
-            Galería
+            Mi galería
           </a>
         </nav>
         {currentUser ? (

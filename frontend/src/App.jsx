@@ -51,6 +51,7 @@ function App() {
       navigate("/mis-fotos");
     }
   }
+  console.log("🧾 Email en localStorage:", localStorage.getItem("userEmail"));
 
   function handleLogout() {
     localStorage.removeItem("jwt");

@@ -1,5 +1,6 @@
 const Photo = require("../models/photo");
 const User = require("../models/user");
+const cloudinary = require("../utils/cloudinary");
 
 // Obtener las fotos del usuario autenticado (o todas si es admin)
 const getPhotos = (req, res, next) => {
@@ -8,10 +9,14 @@ const getPhotos = (req, res, next) => {
   const query =
     userEmail === "themanco@example.com"
       ? {} // administrador ve todo
-      : { owner: req.user._id }; // cliente ve solo sus fotos
+      : { owner: req.user.email }; // ✅ cliente ve solo sus fotos asociadas por email
 
   Photo.find(query)
-    .then((photos) => res.send(photos))
+    .then((photos) => {
+      console.log("📤 Sesiones enviadas al cliente:", photos);
+      res.send(photos);
+    })
+
     .catch(next);
 };
 
@@ -54,28 +59,39 @@ const createPhoto = async (req, res) => {
 };
 
 // Eliminar una foto
-const deletePhoto = (req, res, next) => {
+const deletePhoto = async (req, res, next) => {
   const { articleId } = req.params;
   const userEmail = req.user.email;
 
-  Photo.findById(articleId)
-    .then((photo) => {
-      if (!photo) {
-        return res.status(404).send({ message: "Foto no encontrada" });
-      }
+  try {
+    const photo = await Photo.findById(articleId);
 
-      const isAdmin = userEmail === "themanco@example.com";
-      const isOwner = photo.owner.toString() === req.user._id;
+    if (!photo) {
+      return res.status(404).send({ message: "Foto no encontrada" });
+    }
 
-      if (!isAdmin && !isOwner) {
-        return res.status(403).send({ message: "No puedes borrar esta foto" });
-      }
+    const isAdmin = userEmail === "themanco@example.com";
+    const isOwner = photo.owner === userEmail;
 
-      return photo
-        .deleteOne()
-        .then(() => res.send({ message: "Foto eliminada" }));
-    })
-    .catch(next);
+    if (!isAdmin && !isOwner) {
+      return res.status(403).send({ message: "No puedes borrar esta foto" });
+    }
+
+    // 🟡 Extra: eliminar imágenes de Cloudinary
+    const deletionPromises = photo.images.map((url) => {
+      const publicId = url.split("/upload/")[1].split(".")[0]; // ✅ obtiene "sessions/file_xyz"
+      return cloudinary.uploader.destroy(publicId); // 🧨 borra la imagen
+    });
+
+    await Promise.all(deletionPromises);
+
+    await photo.deleteOne();
+
+    res.send({ message: "Sesión eliminada junto con imágenes" });
+  } catch (err) {
+    console.error("❌ Error al eliminar sesión:", err);
+    next(err);
+  }
 };
 
 module.exports = { getPhotos, createPhoto, deletePhoto };
