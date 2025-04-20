@@ -1,0 +1,39 @@
+:root {
+  --font-main: "Helvetica Neue", sans-serif;
+  --color-bg: #000000;
+  --color-text: #f2f2f2;
+  --color-subtle: #aaaaaa;
+  --color-accent: #ffffff;
+  --color-accent-hover: #dddddd;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-main);
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  line-height: 1.6;
+  scroll-behavior: smooth;
+}
+
+.page {
+  max-width: 1440px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  box-sizing: border-box;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+button {
+  font-family: inherit;
+}
